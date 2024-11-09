@@ -28,6 +28,7 @@ namespace Hotel.Business.Services.Bookings
             var response = new Response<RoomDetailDto>();
             try
             {
+                // Check room exist in system
                 var room = await unitOfWork.RoomRepository.GetAsync(model.RoomId);
                 if (room == null)
                 {
@@ -65,20 +66,23 @@ namespace Hotel.Business.Services.Bookings
             var response = new Response<bool>();
             try
             {
-                TimeSpan ts = new TimeSpan(10, 30, 0);
-                var dsa = model.CheckInDate.Date + ts;
+                // Check user exist in system
                 var user = await unitOfWork.UserRepository.GetAsync(model.UserId);
                 if (user == null)
                 {
                     response.Message = Constants.UserNotFound;
                     return response;
                 }
+
+                // Check room exist in system
                 var room = await unitOfWork.RoomRepository.GetAsync(model.RoomId);
                 if (room == null)
                 {
                     response.Message = Constants.RoomNotFound;
                     return response;
                 }
+
+                // Check reservation date available 
                 var isExistBookingDate = await unitOfWork.Context.Bookings.AnyAsync(p => p.RoomId == model.RoomId && (model.CheckInDate >= p.CheckIn && model.CheckInDate <= p.CheckOut) && (model.CheckOutDate >= p.CheckIn && model.CheckOutDate <= p.CheckOut));
                 if (isExistBookingDate)
                 {
