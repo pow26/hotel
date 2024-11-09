@@ -28,6 +28,12 @@ namespace Hotel.Business.Services.Bookings
             var response = new Response<RoomDetailDto>();
             try
             {
+                var room = await unitOfWork.RoomRepository.GetAsync(model.RoomId);
+                if (room == null)
+                {
+                    response.Message = Constants.RoomNotFound;
+                    return response;
+                }
                 var result = await (from r in unitOfWork.Context.Rooms
                     where r.RoomId == model.RoomId && r.Section.MaxAdult >= model.MaxAdult && r.Section.MaxChildren >= model.MaxChildren && r.Section.Infants >= model.MaxInfant && r.Section.Pets >= model.MaxPet
                     select new RoomDetailDto()
@@ -59,6 +65,24 @@ namespace Hotel.Business.Services.Bookings
             var response = new Response<bool>();
             try
             {
+                var user = await unitOfWork.UserRepository.GetAsync(model.UserId);
+                if (user == null)
+                {
+                    response.Message = Constants.UserNotFound;
+                    return response;
+                }
+                var room = await unitOfWork.RoomRepository.GetAsync(model.RoomId);
+                if (room == null)
+                {
+                    response.Message = Constants.RoomNotFound;
+                    return response;
+                }
+                var isExistBookingDate = await unitOfWork.Context.Bookings.AnyAsync(p => p.RoomId == model.RoomId && (model.CheckInDate >= p.CheckIn && model.CheckInDate <= p.CheckOut) && (model.CheckOutDate >= p.CheckIn && model.CheckOutDate <= p.CheckOut));
+                if (isExistBookingDate)
+                {
+                    response.Message = Constants.ReservationNotAvailable;
+                    return response;
+                }
                 var booking = new Booking()
                 {
                     CheckIn = model.CheckInDate,
