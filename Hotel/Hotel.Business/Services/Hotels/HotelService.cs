@@ -23,8 +23,14 @@ namespace Hotel.Business.Services.Hotels
             var response = new Response<PagingDto<HotelDto>>();
             try
             {
+                if (model.CheckInDate >= model.CheckOutDate)
+                {
+                    response.Message = Constants.CheckOutMessage;
+                    return response;
+                }
+
                 var query = (from r in unitOfWork.Context.Rooms
-                where r.Hotel.LocationId == model.LocationId && r.Section.MaxAdult >= model.MaxAdult && r.Section.MaxChildren >= model.MaxChildren && r.Section.Infants >= model.MaxInfant && r.Section.Pets >= model.MaxPet && r.Bookings.All(a => a.CheckOut <= model.CheckInDate || a.CheckIn >= model.CheckOutDate)
+                where model.LocationId != 0 ? r.Hotel.LocationId == model.LocationId : r.Hotel.LocationId != 0 && r.Section.MaxAdult >= model.MaxAdult && r.Section.MaxChildren >= model.MaxChildren && r.Section.Infants >= model.MaxInfant && r.Section.Pets >= model.MaxPet && r.Bookings.All(a => a.CheckOut <= model.CheckInDate || a.CheckIn >= model.CheckOutDate)
                 select new HotelDto()
                 {
                     HotelId = r.Hotel.HotelId,
@@ -34,7 +40,11 @@ namespace Hotel.Business.Services.Hotels
                     RoomTypeName = r.Section.Name,
                     RoomName = r.Name,
                     RoomId = r.RoomId,
-                    PricePerNight = (decimal) r.Section.PricePerNight
+                    PricePerNight = (decimal) r.Section.PricePerNight,
+                    MaxAdult = (int) r.Section.MaxAdult,
+                    MaxChildren = (int) r.Section.MaxChildren,
+                    Infants = (int) r.Section.Infants,
+                    Pets = (int) r.Section.Pets,
                 });
                 var total = await query.CountAsync();
                 var result = await query.Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();

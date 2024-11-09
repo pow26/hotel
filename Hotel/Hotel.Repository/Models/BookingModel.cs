@@ -1,4 +1,6 @@
-﻿namespace Hotel.Repository.Models
+﻿using System.ComponentModel;
+
+namespace Hotel.Repository.Models
 {
     public class BookingModel
     {
@@ -8,6 +10,7 @@
         public decimal Fee { get; set; }
         public decimal TotalPrice { get; set; }
         public decimal PricePerNight { get; set; }
+        [DefaultValue(1)]
         public int Adults { get; set; }
         public int Children { get; set; }
         public int Infants { get; set; }

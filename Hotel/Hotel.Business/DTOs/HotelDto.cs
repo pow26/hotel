@@ -10,5 +10,12 @@
         public string RoomTypeName { get; set; }
         public string RoomName { get; set; }
         public decimal PricePerNight { get; set; }
+        public int MaxAdult { get; set; }
+
+        public int MaxChildren { get; set; }
+
+        public int Infants { get; set; }
+
+        public int Pets { get; set; }
     }
 }

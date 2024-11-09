@@ -1,18 +1,17 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
 
 namespace Hotel.Repository.Models
 {
     public class SearchModel
     {
-        [Range(1, int.MaxValue)]
+        [DefaultValue(10)]
         public int PageSize { get; set; }
-
-        [Range(0, int.MaxValue)]
+        [DefaultValue(1)]
         public int PageNumber { get; set; }
         public int LocationId { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
+        [DefaultValue(2)]
         public int MaxAdult { get; set; }
         public int MaxChildren { get; set; }
         public int MaxInfant { get; set; }
