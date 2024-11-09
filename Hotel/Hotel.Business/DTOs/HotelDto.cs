@@ -17,5 +17,7 @@
         public int Infants { get; set; }
 
         public int Pets { get; set; }
+        public TimeSpan CheckInTime { get; set; }
+        public TimeSpan CheckOutTime { get; set; }
     }
 }

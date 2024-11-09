@@ -45,6 +45,8 @@ namespace Hotel.Business.Services.Hotels
                     MaxChildren = (int) r.Section.MaxChildren,
                     Infants = (int) r.Section.Infants,
                     Pets = (int) r.Section.Pets,
+                    CheckInTime = r.Hotel.CheckInTime,
+                    CheckOutTime = r.Hotel.CheckOutTime
                 });
                 var total = await query.CountAsync();
                 var result = await query.Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();

@@ -65,6 +65,8 @@ namespace Hotel.Business.Services.Bookings
             var response = new Response<bool>();
             try
             {
+                TimeSpan ts = new TimeSpan(10, 30, 0);
+                var dsa = model.CheckInDate.Date + ts;
                 var user = await unitOfWork.UserRepository.GetAsync(model.UserId);
                 if (user == null)
                 {
@@ -83,10 +85,12 @@ namespace Hotel.Business.Services.Bookings
                     response.Message = Constants.ReservationNotAvailable;
                     return response;
                 }
+
+                var hotel = await unitOfWork.HotelRepository.GetAsync((int) room.HotelId);
                 var booking = new Booking()
                 {
-                    CheckIn = model.CheckInDate,
-                    CheckOut = model.CheckOutDate,
+                    CheckIn = model.CheckInDate.Date + hotel.CheckInTime,
+                    CheckOut = model.CheckOutDate.Date + hotel.CheckOutTime,
                     RoomId = model.RoomId,
                     UserId = model.UserId,
                     TotalPrice = model.TotalPrice,
